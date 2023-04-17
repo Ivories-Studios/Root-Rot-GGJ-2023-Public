@@ -1,11 +1,13 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public sealed class PlayerObject : UnitObject
 {
     [SerializeField] private PlayerUIEvents _playerUIEvents;
     [SerializeField] private RootMovementController _playerMovementController;
+    [SerializeField] private PlayerOutlineScript _playerOutlineScript;
+
+    [SerializeField] private float _damageForce;
 
     protected override void Awake()
     {
@@ -31,7 +33,18 @@ public sealed class PlayerObject : UnitObject
     {
         base.TakeDamage(damage);
         _playerUIEvents.OnHealthChange(UnitStats.Health, UnitStats.MaxHealth);
-        ImpulseSource.GenerateImpulse();
+        ImpulseSource.GenerateImpulse(_damageForce);
+        _playerOutlineScript.TakeDamage();
+    }
+
+    public void Heal(int health)
+    {
+        UnitStats.Health += health;
+
+        if (UnitStats.Health > UnitStats.MaxHealth)
+            UnitStats.Health = UnitStats.MaxHealth;
+
+        _playerUIEvents.OnHealthChange(UnitStats.Health, UnitStats.MaxHealth);
     }
 
     protected override void Die()

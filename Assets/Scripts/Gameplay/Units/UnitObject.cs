@@ -17,7 +17,7 @@ public abstract class UnitObject : MonoBehaviour
     private Ability[] _activeAbilities;
     [HideInInspector] public CinemachineImpulseSource ImpulseSource;
     public Animator Animator;
-    private Rigidbody2D _rigidbody2D;
+    protected Rigidbody2D _rigidbody2D;
 
     protected virtual void Awake()
     {

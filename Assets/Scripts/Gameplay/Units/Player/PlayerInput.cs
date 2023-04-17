@@ -11,6 +11,7 @@ public class PlayerInput : MonoBehaviour
     [SerializeField ] private PlayerUIEvents _playerUIEvents;
 
     [SerializeField] private float storedDelay;
+    [SerializeField] private PlayerOutlineScript playerOutline;
 
     private bool holding = false;
     private Root storedRoot;
@@ -100,11 +101,28 @@ public class PlayerInput : MonoBehaviour
 
         if (AltFireHold) return;
 
-        // check if over existing branch
         Vector2 mPos = con.cam.ScreenToWorldPoint(MousePos);
+
+        // if clicked on grabbing branch
+        foreach (Root r in con.GrabRoots)
+        {
+            if (r.OverlapPoint(mPos))
+            {
+                SelectedRoot = r;
+                SelectedType = RootSelectionType.PULL;
+
+                holding = true;
+
+                con.StartPull();
+                ChangeHighlight(SelectedRoot);
+                return;
+            }
+        }
+
+        // check if over existing branch
         foreach (Root r in con.Roots)
         {
-            if (r.EdgeCollider.OverlapPoint(mPos))
+            if (r.OverlapPoint(mPos))
             {
                 SelectedRoot = r;
                 SelectedType = RootSelectionType.MOVE;
@@ -136,13 +154,14 @@ public class PlayerInput : MonoBehaviour
         if (con.circleCollider.OverlapPoint(mPos))
         {
             con.ClearAllRoots();
+            PlayerHighlight();
             return;
         }
 
         // if clicked on grabbing branch
         foreach (Root r in con.GrabRoots)
         {
-            if (r.EdgeCollider.OverlapPoint(mPos))
+            if (r.OverlapPoint(mPos))
             {
                 SelectedRoot = r;
                 SelectedType = RootSelectionType.PULL;
@@ -158,7 +177,7 @@ public class PlayerInput : MonoBehaviour
         // if clicked on fixed branch
         foreach (Root r in con.Roots)
         {
-            if (r.EdgeCollider.OverlapPoint(mPos))
+            if (r.OverlapPoint(mPos))
             {
                 SelectedRoot = r;
                 SelectedType = RootSelectionType.PULL;
@@ -196,6 +215,49 @@ public class PlayerInput : MonoBehaviour
         Vector2 playerScreenPos = con.cam.WorldToScreenPoint(transform.position);
         AimDir = (MousePos - playerScreenPos).normalized;
 
+        // check stored root
+        if (storedTimer > storedDelay)
+        {
+            if (storedRoot != null)
+            {
+                foreach (Root r in con.GrabRoots)
+                {
+                    if (r == storedRoot)
+                    {
+                        SelectedRoot = r;
+                        SelectedType = RootSelectionType.PULL;
+                        storedRoot = null;
+
+                        holding = true;
+
+                        con.StartPull();
+                        ChangeHighlight(SelectedRoot);
+                        break;
+                    }
+                }
+            }
+
+            if (storedRoot != null)
+            {
+                foreach (Root r in con.Roots)
+                {
+                    if (r == storedRoot)
+                    {
+                        SelectedRoot = r;
+                        SelectedType = RootSelectionType.MOVE;
+                        storedRoot = null;
+                        ChangeHighlight(SelectedRoot);
+                        break;
+                    }
+                }
+            }
+        }
+        else
+        {
+            storedTimer += Time.deltaTime;
+        }
+
+
         if (SelectedType == RootSelectionType.MOVE) 
         { 
             if (FireHold)
@@ -203,7 +265,7 @@ public class PlayerInput : MonoBehaviour
                 Vector2 MouseWorldPos = con.cam.ScreenToWorldPoint(MousePos);
                 foreach (Root r in con.Roots)
                 {
-                    if (r.EdgeCollider.OverlapPoint(MouseWorldPos))
+                    if (r.OverlapPoint(MouseWorldPos))
                     {
                         SelectedRoot = r;
                         ChangeHighlight(r);
@@ -218,44 +280,23 @@ public class PlayerInput : MonoBehaviour
                 ChangeHighlight(null);
             }
         }
-        else if (SelectedType == RootSelectionType.NONE && FireHold) 
+        else if (SelectedType == RootSelectionType.NONE && FireHold && storedRoot == null) 
         {
-            storedTimer += Time.deltaTime;
-
             Vector2 MouseWorldPos = con.cam.ScreenToWorldPoint(MousePos);
-
-            if (storedTimer > storedDelay)
+            foreach (Root r in con.Roots)
             {
-                foreach (Root r in con.GrabRoots)
+                if (r.OverlapPoint(MouseWorldPos))
                 {
-                    if (r == storedRoot)
-                    {
-                        SelectedRoot = r;
-                        SelectedType = RootSelectionType.PULL;
-
-                        holding = true;
-
-                        con.StartPull();
-                        ChangeHighlight(SelectedRoot);
-                        break;
-                    }
+                    SelectedRoot = r;
+                    SelectedType = RootSelectionType.MOVE;
+                    ChangeHighlight(SelectedRoot);
+                    break;
                 }
             }
-
-            // if still nothing selected
-            if (SelectedType == RootSelectionType.NONE)
-            {
-                foreach (Root r in con.Roots)
-                {
-                    if (r.EdgeCollider.OverlapPoint(MouseWorldPos))
-                    {
-                        SelectedRoot = r;
-                        SelectedType = RootSelectionType.MOVE;
-                        ChangeHighlight(SelectedRoot);
-                        break;
-                    }
-                }
-            }
+        }
+        else if (!FireHold && storedRoot != null)
+        {
+            storedRoot = null;
         }
 
 
@@ -292,9 +333,15 @@ public class PlayerInput : MonoBehaviour
             Root highR = null;
 
             Vector2 MouseWorldPos = con.cam.ScreenToWorldPoint(MousePos);
+            if (con.circleCollider.OverlapPoint(MouseWorldPos))
+            {
+                PlayerHighlight();
+                return;
+            }
+
             foreach (Root r in con.Roots)
             {
-                if (r.EdgeCollider.OverlapPoint(MouseWorldPos))
+                if (r.OverlapPoint(MouseWorldPos))
                 {
                     highR = r;
                     break;
@@ -305,7 +352,7 @@ public class PlayerInput : MonoBehaviour
             {
                 foreach (Root r in con.GrabRoots)
                 {
-                    if (r.EdgeCollider.OverlapPoint(MouseWorldPos))
+                    if (r.OverlapPoint(MouseWorldPos))
                     {
                         highR = r;
                         break;
@@ -320,6 +367,8 @@ public class PlayerInput : MonoBehaviour
 
     private void ChangeHighlight(Root root)
     {
+        playerOutline.Highlight = false;
+
         if (highlighted == root) return;
 
         if (highlighted != null) highlighted.Unhighlight();
@@ -329,6 +378,11 @@ public class PlayerInput : MonoBehaviour
         highlighted = root;
     }
 
+    private void PlayerHighlight()
+    {
+        ChangeHighlight(null);
+        playerOutline.Highlight = true;
+    }
 }
 
 public enum RootSelectionType

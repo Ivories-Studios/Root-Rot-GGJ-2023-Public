@@ -19,7 +19,11 @@ public class RootGraphics : MonoBehaviour
     [SerializeField] private float anchorDepth;
     [SerializeField] private float anchorSize;
     [SerializeField] private AnimationCurve anchorNormalInfluence;
-    [SerializeField] private float anchorNormalLength;
+    [Space]
+    [SerializeField] private AnimationCurve speedBendCurve;
+    [SerializeField] private Vector2 speedStrength;
+    [SerializeField] private float branchTension;
+    [SerializeField] private float branchDrag;
     [Space]
     [Header("Quality")]
     [SerializeField] private int sides;
@@ -30,6 +34,12 @@ public class RootGraphics : MonoBehaviour
     [Header("Safety")]
     [SerializeField] private Vector2 stretchRange;
     [SerializeField] private float minLength;
+
+
+    // physics
+    private Vector2 branchVel = Vector2.zero;
+    private Vector2 branchPos = Vector2.zero;
+    private Vector2 lastBranchPos;
 
     //private LineRenderer lineRenderer;
     private EdgeCollider2D edgeCollider;
@@ -43,6 +53,8 @@ public class RootGraphics : MonoBehaviour
         //lineRenderer= GetComponent<LineRenderer>();
         edgeCollider= GetComponent<EdgeCollider2D>();
         filter= GetComponent<MeshFilter>();
+
+        lastBranchPos = transform.position;
     }
 
     public void UpdateGraphics()
@@ -110,10 +122,10 @@ public class RootGraphics : MonoBehaviour
     {
         Vector3 point = Vector3.zero;
         
-        if (anchored && anchorNormalLength > 0.0f)
+        if (anchored && anchorLength > 0.0f)
         {
             float anchorD = (1.0f - alongBranch) * length;
-            float anchorX = anchorD / anchorNormalLength;
+            float anchorX = anchorD / anchorLength;
             Vector3 addition = Vector3.Lerp(
                 alongBranch * length * up,
                 ((Vector3)surfaceNormal) * anchorD + (Endpoint - transform.position),
@@ -138,9 +150,14 @@ public class RootGraphics : MonoBehaviour
             size += anchorInfluence.Evaluate(anchorDist) * anchorSize;
         }
         point += size * rootSpace * right;
-
         
         point = Quaternion.AngleAxis(rootTurn * (1.0f - alongBranch) * length * stretch + branchRotation, up) * (point - rotPoint) + rotPoint;
+
+        // branch speed
+        float speedInfluence = speedBendCurve.Evaluate(alongBranch);
+        Vector2 vel = Quaternion.FromToRotation(up, Vector2.up) * branchPos;
+        point += speedStrength.y * length * speedInfluence * vel.y * up 
+            + speedStrength.x * length * speedInfluence * vel.x * right;
 
         Vector3 tangent = new(0.0f, 0.0f, ((length / stretch) * tangentSize) / (subdivisions + 2.0f));
         Quaternion rotation = Quaternion.FromToRotation(Vector3.forward, -up) * Quaternion.AngleAxis(branchRotation, up);
@@ -156,5 +173,23 @@ public class RootGraphics : MonoBehaviour
     public void Deanchor()
     {
         anchored= false;
+    }
+
+    private void FixedUpdate()
+    {
+        // drag
+        branchVel -=  branchVel * Mathf.Min(branchDrag * Time.fixedDeltaTime, 1.0f);
+
+        // speed
+        Vector2 branchP = (Endpoint + transform.position) / 2.0f;
+        branchVel += branchP - lastBranchPos;
+        lastBranchPos = branchP;
+
+        // tension
+        Vector2 tension = -branchPos * branchTension  * new Vector2(branchPos.x * branchPos.x, branchPos.y * branchPos.y);
+        branchVel += tension * Time.fixedDeltaTime;
+
+        // position update
+        branchPos += branchVel * Time.fixedDeltaTime;
     }
 }

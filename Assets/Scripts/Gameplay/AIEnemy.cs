@@ -33,6 +33,8 @@ public class AIEnemy : MonoBehaviour
     protected Rigidbody2D rb;
     protected LineRenderer testLine;
 
+    protected Vector3 defaultScale;
+
     protected float testTimer;
     // Start is called before the first frame update
     protected virtual void Start()
@@ -49,6 +51,8 @@ public class AIEnemy : MonoBehaviour
         }
         target = GameObject.FindGameObjectsWithTag("Player")[0].transform;
         animator.SetBool("Moving", true);
+
+        defaultScale = transform.localScale;
     }
 
     
@@ -64,8 +68,8 @@ public class AIEnemy : MonoBehaviour
             Vector2 dir = GetDirectionOfMovement();
             if (Vector2.Dot(dir, rb.velocity) / dir.magnitude < maxSpeed)
             {
-                transform.localScale = dir.x < 0 ? new Vector3(1, 1, 1) : new Vector3(-1, 1, 1);
-                float opposingForce = (-Vector2.Dot(rb.velocity, dir)).Remap(-1, 1, 1, 3);
+                transform.localScale = dir.x < 0 ? defaultScale : new Vector3(-defaultScale.x, defaultScale.y, defaultScale.z);
+                float opposingForce = (-Vector2.Dot(rb.velocity.normalized, dir)).Remap(-1, 1, 1, 3);
                 rb.AddForce(dir * (acceleration * Time.fixedDeltaTime * opposingForce));
             }
         }
@@ -74,7 +78,7 @@ public class AIEnemy : MonoBehaviour
             Vector2 dir = GetDirectionOfMovement();
             if (Vector2.Dot(-dir, rb.velocity) / dir.magnitude < maxSpeed)
             {
-                float opposingForce = (-Vector2.Dot(rb.velocity, dir)).Remap(-1, 1, 1, 3);
+                float opposingForce = (-Vector2.Dot(rb.velocity.normalized, dir)).Remap(-1, 1, 1, 3);
                 rb.AddForce(-dir * (acceleration * Time.fixedDeltaTime * opposingForce));
             }
         }

@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 2632352244983504156}
   - component: {fileID: 4213562333100658100}
   - component: {fileID: 3975707423192513681}
+  - component: {fileID: 2299256735003031963}
+  - component: {fileID: 6707117924106181243}
   m_Layer: 6
   m_Name: Model
   m_TagString: Untagged
@@ -102,6 +104,40 @@ MonoBehaviour:
   angleResolution: 30
   AlignPixelGrid: 1
   PixelGridReference: {fileID: 0}
+--- !u!114 &2299256735003031963
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7079667492817069590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2acf0adf62718e4199b68a60cb21ee5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ID: 0
+  UseRandomUID: 1
+  UseRootUID: 0
+  UseRootColor: 1
+  Color: {r: 0, g: 0, b: 0, a: 0.5019608}
+--- !u!114 &6707117924106181243
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7079667492817069590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0df98c028c68faa4f80ea69adb1d6056, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Highlight: 0
+  highlightColor: {r: 1, g: 0.9843137, b: 0.7882353, a: 0.5529412}
+  damageColor: {r: 1, g: 1, b: 1, a: 0.5803922}
+  damageTimes: 2
+  damageSpeed: 0.1
 --- !u!1 &7594599702628012800
 GameObject:
   m_ObjectHideFlags: 0
@@ -117,7 +153,6 @@ GameObject:
   - component: {fileID: 7594599702628012807}
   - component: {fileID: 7594599702628012825}
   - component: {fileID: 3941227147855736677}
-  - component: {fileID: -8479086357788513668}
   - component: {fileID: 3707791385907090306}
   m_Layer: 6
   m_Name: Player
@@ -140,7 +175,7 @@ Transform:
   m_Children:
   - {fileID: 3848626452185943864}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!58 &6108884582785871787
 CircleCollider2D:
@@ -227,7 +262,9 @@ MonoBehaviour:
   ImpulseSource: {fileID: 0}
   Animator: {fileID: 0}
   _playerUIEvents: {fileID: 11400000, guid: d03d0cf5dd54b6c4baf93a257972ddbd, type: 2}
-  _playerMovementController: {fileID: 0}
+  _playerMovementController: {fileID: 7594599702628012807}
+  _playerOutlineScript: {fileID: 6707117924106181243}
+  _damageForce: 5
 --- !u!114 &7594599702628012807
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -314,6 +351,7 @@ MonoBehaviour:
   AimDir: {x: 0, y: 0}
   _playerUIEvents: {fileID: 11400000, guid: d03d0cf5dd54b6c4baf93a257972ddbd, type: 2}
   storedDelay: 0.2
+  playerOutline: {fileID: 6707117924106181243}
 --- !u!114 &3941227147855736677
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -374,59 +412,6 @@ MonoBehaviour:
   m_UseImpactDirection: 1
   m_ScaleImpactWithMass: 0
   m_ScaleImpactWithSpeed: 1
---- !u!114 &-8479086357788513668
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7594599702628012800}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 180ecf9b41d478f468eb3e9083753217, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ImpulseDefinition:
-    m_ImpulseChannel: 1
-    m_ImpulseShape: 2
-    m_CustomImpulseShape:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    m_ImpulseDuration: 0.2
-    m_ImpulseType: 3
-    m_DissipationRate: 0.25
-    m_RawSignal: {fileID: 11400000, guid: 69ce8388f6785dd4c8c39915efece2f4, type: 2}
-    m_AmplitudeGain: 1
-    m_FrequencyGain: 1
-    m_RepeatMode: 0
-    m_Randomize: 1
-    m_TimeEnvelope:
-      m_AttackShape:
-        serializedVersion: 2
-        m_Curve: []
-        m_PreInfinity: 2
-        m_PostInfinity: 2
-        m_RotationOrder: 4
-      m_DecayShape:
-        serializedVersion: 2
-        m_Curve: []
-        m_PreInfinity: 2
-        m_PostInfinity: 2
-        m_RotationOrder: 4
-      m_AttackTime: 0
-      m_SustainTime: 0.2
-      m_DecayTime: 0.2
-      m_ScaleWithImpact: 1
-      m_HoldForever: 0
-    m_ImpactRadius: 30
-    m_DirectionMode: 0
-    m_DissipationMode: 2
-    m_DissipationDistance: 30
-    m_PropagationSpeed: 343
-  m_DefaultVelocity: {x: 0, y: -1, z: 0}
 --- !u!81 &3707791385907090306
 AudioListener:
   m_ObjectHideFlags: 0

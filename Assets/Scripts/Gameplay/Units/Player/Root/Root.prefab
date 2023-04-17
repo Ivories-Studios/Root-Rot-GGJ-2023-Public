@@ -70,7 +70,7 @@ EdgeCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
-  m_EdgeRadius: 0.45
+  m_EdgeRadius: 0.5
   m_Points:
   - {x: -0.5, y: 0}
   - {x: 1.73, y: 0}
@@ -102,7 +102,7 @@ MonoBehaviour:
   shootSpeed: 100
   retractDist: 0.3
   highlightColor: {r: 1, g: 0.98319227, b: 0.7877358, a: 0.5529412}
-  _maxHealth: 2
+  anchorRadius: 1.25
 --- !u!114 &-7994943453160464850
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -196,7 +196,42 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  anchorNormalLength: 2
+  speedBendCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: -0
+      outSlope: -0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.125
+    - serializedVersion: 3
+      time: 0.5012285
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.13300495
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: -0.02318758
+      outSlope: -0.02318758
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.1453202
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  speedStrength: {x: -0.2, y: -0.01}
+  branchTension: 50000
+  branchDrag: 5
   sides: 6
   segments: 3
   subdivisions: 10

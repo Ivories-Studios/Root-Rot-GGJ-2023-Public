@@ -311,6 +311,12 @@ public class RootMovementController : MonoBehaviour
     {
         root.Retract();
 
+        if (playerInput.SelectedRoot == root)
+        {
+            playerInput.SelectedRoot = null;
+            playerInput.SelectedType = RootSelectionType.NONE;
+        }
+
         if (root.Fixed)
         {
             Roots.Remove(root);
@@ -354,9 +360,11 @@ public class RootMovementController : MonoBehaviour
 
     public void ClearAllRoots()
     {
-        foreach (Root r in Roots) r.Retract();
-        Roots.Clear();
-        rootLengthLeft = maxRootLength;
+        int t_rootCount = Roots.Count;
+        for (int i = 0; i < t_rootCount; i++)
+        {
+            ClearRoot(Roots[0]);
+        }
         AudioManager.PlaySound(Sounds.CutRoots, transform.position);
     }
 

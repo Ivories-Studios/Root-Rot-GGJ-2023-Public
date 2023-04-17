@@ -17,6 +17,7 @@ public class Root : MonoBehaviour
     [SerializeField] private float shootSpeed;
     [SerializeField] private float retractDist;
     [SerializeField] private Color highlightColor;
+    [SerializeField] private float anchorRadius;
 
     private RootMovementController con;
     private RootGraphics graphics;
@@ -120,7 +121,7 @@ public class Root : MonoBehaviour
                         Fixed = false;
                         GrabBody = rb;
                         GrabOffset = hit.collider.offset;
-                        ConnectedPoint = hit.transform.position;
+                        ConnectedPoint = hit.transform.position + (GrabBody.transform.rotation * (Vector3)GrabOffset);
                         if (hit.collider.TryGetComponent(out UnitObject unitObject))
                         {
                             unitObject.UnitStats.IsGrabbed = true;
@@ -157,7 +158,7 @@ public class Root : MonoBehaviour
                     con.ClearRoot(this);
                     return;
                 }
-                ConnectedPoint = GrabBody.transform.position + ((Vector3)GrabOffset);   
+                ConnectedPoint = GrabBody.transform.position + (GrabBody.transform.rotation * (Vector3)GrabOffset);   
             }
             endPoint = ConnectedPoint;
         }
@@ -194,6 +195,14 @@ public class Root : MonoBehaviour
         {
             con.ClearRoot(this);
         }
+    }
+
+    public bool OverlapPoint(Vector2 point)
+    {
+        return EdgeCollider.OverlapPoint(point) || (
+            state == RootState.ANCHORED 
+            && (point - ConnectedPoint).sqrMagnitude < anchorRadius * anchorRadius
+            );
     }
 }
 

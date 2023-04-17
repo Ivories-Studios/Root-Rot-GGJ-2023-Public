@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2562662829367537280}
-  m_Layer: 3
+  m_Layer: 8
   m_Name: Thunder Variant
   m_TagString: Environment
   m_Icon: {fileID: 0}
@@ -108,7 +108,7 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 176d4c34c401db841a37032cc41a4cbc,
         type: 3}
       propertyPath: m_Layer
-      value: 3
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 176d4c34c401db841a37032cc41a4cbc,
         type: 3}

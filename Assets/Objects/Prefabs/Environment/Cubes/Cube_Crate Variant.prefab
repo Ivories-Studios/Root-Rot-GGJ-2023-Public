@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 3007683538453268701}
   - component: {fileID: 550620349568866219}
   - component: {fileID: -583017394082549946}
+  - component: {fileID: 201146986034462109}
+  - component: {fileID: 2368987137809741458}
   m_Layer: 3
   m_Name: Cube_Crate Variant
   m_TagString: Environment
@@ -106,6 +108,94 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &201146986034462109
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2519377593455366759}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f950c031a2e7fe45af9c77bc4cf5275, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Team: 1
+  UnitStats:
+    Health: 1
+    Power: 0
+    MaxHealth: 1
+    IsDead: 0
+    IsGrabbed: 0
+  _abilities: []
+  ImpulseSource: {fileID: 0}
+  Animator: {fileID: 0}
+  _forceThreshold: 6000
+  _fracturedObj: {fileID: 5924589268982041656, guid: 3979035bb89a8ff40a436ba18b017172,
+    type: 3}
+  _impactObj: {fileID: 1338799915020690152, guid: c9d7d01abf8c4c541b0b174a4f9d2956,
+    type: 3}
+  _explosionObj: {fileID: 0}
+  _camShake: 0.3
+  _pushRange: 5
+  _pushForce: 5
+  _pushDamage: 0
+  _pushMask:
+    serializedVersion: 2
+    m_Bits: 137
+--- !u!114 &2368987137809741458
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2519377593455366759}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 180ecf9b41d478f468eb3e9083753217, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ImpulseDefinition:
+    m_ImpulseChannel: 1
+    m_ImpulseShape: 2
+    m_CustomImpulseShape:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    m_ImpulseDuration: 0.2
+    m_ImpulseType: 3
+    m_DissipationRate: 0.25
+    m_RawSignal: {fileID: 11400000, guid: 69ce8388f6785dd4c8c39915efece2f4, type: 2}
+    m_AmplitudeGain: 2
+    m_FrequencyGain: 2
+    m_RepeatMode: 0
+    m_Randomize: 1
+    m_TimeEnvelope:
+      m_AttackShape:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      m_DecayShape:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      m_AttackTime: 0
+      m_SustainTime: 0.2
+      m_DecayTime: 0.2
+      m_ScaleWithImpact: 1
+      m_HoldForever: 0
+    m_ImpactRadius: 30
+    m_DirectionMode: 0
+    m_DissipationMode: 2
+    m_DissipationDistance: 30
+    m_PropagationSpeed: 343
+  m_DefaultVelocity: {x: 0, y: -1, z: 0}
 --- !u!1001 &7084076472375582
 PrefabInstance:
   m_ObjectHideFlags: 0
